@@ -1,1 +1,2 @@
-Server README: run npm install then npm run dev
+Server README: npm install && npm run build
+
