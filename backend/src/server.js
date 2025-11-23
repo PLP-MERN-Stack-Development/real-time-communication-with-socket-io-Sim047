@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // backend/server.js
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,6 +20,24 @@ import statusRoutes from "./routes/status.js";
 import conversationsRoutes from "./routes/conversations.js";
 
 import Message from "./models/Message.js";
+=======
+import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import messageRoutes from './routes/messages.js';
+import fileRoutes from './routes/files.js';
+import Message from './models/Message.js';
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +45,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
+<<<<<<< HEAD
 const FRONTEND = process.env.FRONTEND_URL || "*";
 
 const io = new Server(server, {
@@ -60,10 +80,34 @@ app.use("/api/conversations", conversationsRoutes);
 io.on("connection", (socket) => {
   console.log("[io] connection", socket.id);
 
+=======
+const FRONTEND = process.env.FRONTEND_URL || '*';
+const io = new Server(server, { cors: { origin: FRONTEND } });
+
+app.use(cors({ origin: FRONTEND }));
+app.use(express.json({ limit: '10mb' }));
+
+// static uploads
+const UPLOAD_DIR = process.env.UPLOAD_DIR || 'uploads';
+app.use('/uploads', express.static(path.join(__dirname, '..', UPLOAD_DIR)));
+
+// routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/files', fileRoutes);
+
+// Socket.IO logic
+const onlineUsers = new Map();
+
+io.on('connection', (socket) => {
+  console.log('[io] connection', socket.id);
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
   const clientUser = socket.handshake.auth?.user;
   if (clientUser && (clientUser.id || clientUser._id)) {
     const uid = clientUser.id || clientUser._id;
     onlineUsers.set(uid, socket.id);
+<<<<<<< HEAD
     io.emit("presence_update", { userId: uid, status: "online" });
   }
 
@@ -73,11 +117,22 @@ io.on("connection", (socket) => {
 
   // SEND MESSAGE
   socket.on("send_message", async ({ room, message }) => {
+=======
+    io.emit('presence_update', { userId: uid, status: 'online' });
+  }
+
+  socket.on('join_room', (room) => {
+    socket.join(room);
+  });
+
+  socket.on('send_message', async ({ room, message }) => {
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
     try {
       const saved = await Message.create({
         sender: message.sender._id || message.sender.id || message.sender,
         text: message.text,
         room,
+<<<<<<< HEAD
         fileUrl: message.fileUrl || "",
         replyTo: message.replyTo || null,
         createdAt: message.createdAt ? new Date(message.createdAt) : new Date(),
@@ -139,10 +194,55 @@ io.on("connection", (socket) => {
       const msg = await Message.findById(messageId);
       if (!msg) return;
 
+=======
+        fileUrl: message.fileUrl || '',
+        replyTo: message.replyTo || null,
+        createdAt: message.createdAt ? new Date(message.createdAt) : new Date()
+      });
+      const populated = await Message.findById(saved._id).populate('sender','username avatar').populate('replyTo').populate('readBy','username');
+      io.to(room).emit('receive_message', populated);
+    } catch (err) {
+      console.error('[io] send_message error', err);
+      socket.emit('error_message', { message: 'failed to save message' });
+    }
+  });
+
+  socket.on('react', async ({ room, messageId, userId, emoji }) => {
+    try {
+      if (userId && (userId.id || userId._id)) userId = userId.id || userId._id;
+      if (!userId) return;
+      const msg = await Message.findById(messageId);
+      if (!msg) return;
+      const exists = msg.reactions.find(r => String(r.userId) === String(userId));
+      if (exists && exists.emoji === emoji) {
+        msg.reactions = msg.reactions.filter(r => String(r.userId) !== String(userId));
+      } else {
+        msg.reactions = msg.reactions.filter(r => String(r.userId) !== String(userId));
+        msg.reactions.push({ userId, emoji });
+      }
+      await msg.save();
+      const populated = await Message.findById(messageId).populate('sender','username avatar').populate('replyTo').populate('readBy','username');
+      io.to(room).emit('reaction_update', populated);
+    } catch (err) {
+      console.error('[io] react error', err);
+    }
+  });
+
+  socket.on('typing', ({ room, userId, typing }) => {
+    socket.to(room).emit('typing', { userId, typing });
+  });
+
+  socket.on('delivered', async ({ room, messageId, userId }) => {
+    try {
+      if (userId && (userId.id || userId._id)) userId = userId.id || userId._id;
+      const msg = await Message.findById(messageId);
+      if (!msg) return;
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
       if (!msg.readBy.map(String).includes(String(userId))) {
         msg.readBy.push(userId);
         await msg.save();
       }
+<<<<<<< HEAD
 
       io.to(room).emit("delivered", { messageId, userId });
     } catch (err) {
@@ -157,10 +257,22 @@ io.on("connection", (socket) => {
       const msg = await Message.findById(messageId);
       if (!msg) return;
 
+=======
+      io.to(room).emit('delivered', { messageId, userId });
+    } catch (err) { console.error('[io] delivered error', err); }
+  });
+
+  socket.on('read', async ({ room, messageId, userId }) => {
+    try {
+      if (userId && (userId.id || userId._id)) userId = userId.id || userId._id;
+      const msg = await Message.findById(messageId);
+      if (!msg) return;
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
       if (!msg.readBy.map(String).includes(String(userId))) {
         msg.readBy.push(userId);
         await msg.save();
       }
+<<<<<<< HEAD
 
       io.to(room).emit("read", { messageId, userId });
     } catch (err) {
@@ -174,12 +286,24 @@ io.on("connection", (socket) => {
       if (sid === socket.id) {
         onlineUsers.delete(uid);
         io.emit("presence_update", { userId: uid, status: "offline" });
+=======
+      io.to(room).emit('read', { messageId, userId });
+    } catch (err) { console.error('[io] read error', err); }
+  });
+
+  socket.on('disconnect', () => {
+    for (const [uid, sid] of onlineUsers.entries()) {
+      if (sid === socket.id) {
+        onlineUsers.delete(uid);
+        io.emit('presence_update', { userId: uid, status: 'offline' });
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
         break;
       }
     }
   });
 });
 
+<<<<<<< HEAD
 // DB connect + start
 const PORT = process.env.PORT || 5000;
 
@@ -193,5 +317,18 @@ mongoose
   .then(() => server.listen(PORT, () => console.log("Server running on", PORT)))
   .catch((err) => {
     console.error("MongoDB connection error:", err.message || err);
+=======
+// DB connect & server start
+const PORT = process.env.PORT || 5000;
+if (!process.env.MONGO_URI) {
+  console.error('MONGO_URI not set in environment');
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGO_URI, { autoIndex: true })
+  .then(()=> server.listen(PORT, ()=> console.log('Server running on', PORT)))
+  .catch(err => {
+    console.error('mongo connect err', err.message || err);
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
     process.exit(1);
   });

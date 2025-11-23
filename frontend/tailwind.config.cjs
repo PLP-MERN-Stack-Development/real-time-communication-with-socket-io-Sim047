@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // tailwind.config.cjs
 module.exports = {
   darkMode: "class",
@@ -20,3 +21,13 @@ module.exports = {
   },
   plugins: [],
 };
+=======
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{ts,tsx,js,jsx}"
+  ],
+  theme: { extend: {} },
+  plugins: [],
+}
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2

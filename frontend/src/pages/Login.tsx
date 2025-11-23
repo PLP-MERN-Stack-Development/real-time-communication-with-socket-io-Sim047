@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import Logo from "../assets/logo.png";   // ← ADD THIS
 
+=======
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Login({ onSuccess, switchToRegister }) {
@@ -27,6 +30,7 @@ export default function Login({ onSuccess, switchToRegister }) {
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center bg-[#071229] px-4">
       <div className="bg-slate-800/60 p-10 rounded-xl w-full max-w-md text-slate-100">
 
@@ -41,12 +45,23 @@ export default function Login({ onSuccess, switchToRegister }) {
         </h2>
 
         {error && <div className="text-red-400 mb-3 text-center">{error}</div>}
+=======
+    <div className="min-h-screen flex items-center justify-center bg-[#071229]">
+      <div className="bg-slate-800/60 p-10 rounded-xl w-[420px] text-slate-100">
+        <h2 className="text-2xl font-bold mb-4">Log In</h2>
+
+        {error && <div className="text-red-400 mb-3">{error}</div>}
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
 
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           <input
             placeholder="Email"
             type="email"
+<<<<<<< HEAD
             className="p-3 rounded-md bg-slate-900/50 border border-slate-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 outline-none"
+=======
+            className="p-3 rounded-md bg-slate-900/50"
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -54,7 +69,11 @@ export default function Login({ onSuccess, switchToRegister }) {
           <input
             placeholder="Password"
             type="password"
+<<<<<<< HEAD
             className="p-3 rounded-md bg-slate-900/50 border border-slate-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 outline-none"
+=======
+            className="p-3 rounded-md bg-slate-900/50"
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -64,9 +83,15 @@ export default function Login({ onSuccess, switchToRegister }) {
           </button>
         </form>
 
+<<<<<<< HEAD
         <p className="mt-6 text-sm text-center opacity-80">
           Don’t have an account?{" "}
           <button onClick={switchToRegister} className="text-cyan-300 hover:underline">
+=======
+        <p className="mt-4 text-sm opacity-70">
+          Don't have an account?{" "}
+          <button onClick={switchToRegister} className="underline text-cyan-300">
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
             Register
           </button>
         </p>

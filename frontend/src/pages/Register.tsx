@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import Logo from "../assets/logo.png";   // ← ADD THIS
+=======
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Register({ onSuccess, switchToLogin }) {
   const [username, setUsername] = useState("");
+<<<<<<< HEAD
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
+=======
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [error, setError]       = useState("");
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -36,12 +46,16 @@ export default function Register({ onSuccess, switchToLogin }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#071229] px-4">
       <div className="auth-card w-full max-w-md relative">
+<<<<<<< HEAD
 
         {/* LOGO */}
         <div className="flex justify-center mb-6">
           <img src={Logo} alt="BANJA Logo" className="w-24 drop-shadow-lg" />
         </div>
 
+=======
+        
+>>>>>>> 5a5c0340e2005655c4949034d4fe94fbb3c422b2
         {/* Title */}
         <h2 className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
           Create Your Account
